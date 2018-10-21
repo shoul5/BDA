@@ -9,39 +9,43 @@
 
 library(shiny)
 
+load('AgilityData.RData')
+
+dataDF$Height <- as.factor(dataDF$Height)
+dataDF$JWWW.YPS <- as.numeric(dataDF$JWWW.YPS)
+colnames(dataDF)[6]<-"JWWW.YPS"
+
 # Define UI for application that draws a histogram
-ui <- fluidPage(
+ui <- pageWithSidebar(
    
    # Application title
-   titlePanel("Old Faithful Geyser Data"),
+   headerPanel("Power 60 Data - 2018 Q2"),
    
    # Sidebar with a slider input for number of bins 
-   sidebarLayout(
       sidebarPanel(
-         sliderInput("bins",
-                     "Number of bins:",
-                     min = 1,
-                     max = 50,
-                     value = 30)
+         selectInput(inputId = "Heights",
+                     label = "Dog Jump Height:",
+                     choices=c("16","20","24"),
+                     selected = c("20"))
       ),
       
       # Show a plot of the generated distribution
       mainPanel(
-         plotOutput("distPlot")
+         plotOutput("plot")
       )
-   )
+   
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
    
-   output$distPlot <- renderPlot({
+   output$plot <- renderPlot({
       # generate bins based on input$bins from ui.R
-      x    <- faithful[, 2] 
-      bins <- seq(min(x), max(x), length.out = input$bins + 1)
+      x    <- dplyr::filter(dataDF, Height == input$Heights)
+      #heights <- levels(dataDF$Height)
       
       # draw the histogram with the specified number of bins
-      hist(x, breaks = bins, col = 'darkgray', border = 'white')
+      plot(x[,1],x[,6],col = 'darkgray', border = 'white')
    })
 }
 
