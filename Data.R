@@ -5,6 +5,7 @@ library(data.table)
 library(tidyr)
 library(stringr)
 year <- 2018
+quarter <- 1
 
 #for(year in 2016:2018){
     for(quarter in 1:2){
@@ -46,10 +47,14 @@ colnames(df24new)[1] <- "Placing"
 df24final <- df24new[-c(1),]
 df24final$Height <- c("24")
 
-dataDF <- rbind(df16final,df20final,df24final)
+dataDF_int <- rbind(df16final,df20final,df24final)
+dataDF_int$Quarter <- rep(paste0("Q",quarter),nrow(dataDF_int))
 
-save(dataDF,file=paste0("Data",year,"q",quarter,".RData"))
+save(dataDF_int,file=paste0("Data",year,"q",quarter,".RData"))
 
-assign(paste0("data",year,"q",quarter),dataDF)
+assign(paste0("data",year,"q",quarter),dataDF_int)
     }
-#}
+
+dataDF <- rbind(data2018q1,data2018q2)
+
+save(dataDF, file = "AgilityData.RData")
